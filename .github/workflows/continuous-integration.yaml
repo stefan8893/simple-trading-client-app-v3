@@ -1,0 +1,35 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  build:
+    name: "Lint, Build & Test"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js with pnpm
+        uses: pnpm/setup@v3
+        with:
+          runtime: node@24
+          cache: true
+
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test:run

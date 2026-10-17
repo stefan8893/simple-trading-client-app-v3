@@ -1,0 +1,77 @@
+name: Continuous Deployment
+
+on:
+  push:
+    tags: ["**"]
+
+jobs:
+  metadata:
+    name: Extract Metadata
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
+
+    steps:
+      - name: Extract version from tag
+        id: extract_version
+        run: |
+          $Version = $env:GITHUB_REF -replace 'refs/tags/', ''
+          Write-Host "Version: $Version"
+          echo "version=$Version" >> $env:GITHUB_OUTPUT
+
+      - name: Validate SemVer version
+        run: |
+          $Version = "${{ steps.extract_version.outputs.version }}"
+
+          if ($Version -notmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$') {
+            Write-Error "Version '$Version' is not a valid SemVer."
+            EXIT -1
+          } else {
+            Write-Host "Version '$Version' is a valid SemVer. "
+          }
+
+  build_and_deploy_job:
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+    needs: metadata
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Setup Node.js with pnpm
+        uses: pnpm/setup@v3
+        with:
+          runtime: node@24
+          cache: true
+
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        id: build
+        run: |
+          npm version ${{ needs.metadata.outputs.version }} --allow-same-version --no-git-tag-version
+          pnpm build
+
+      - name: Test
+        id: test
+        run: pnpm test:run
+
+      - name: Deploy
+        id: deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_FOREST_0DF8EA903 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "/"
+          api_location: ""
+          output_location: ".next"
+          skip_app_build: true
