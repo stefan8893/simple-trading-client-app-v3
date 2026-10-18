@@ -22,7 +22,9 @@ export function Header() {
           !isAtTop && "transition-transform duration-300 ease-in-out",
         )}
       >
-        <div>Header</div>
+        <h1 className="font-bold text-foreground text-xl tracking-tight">
+          Simple Trading
+        </h1>
       </header>
     </>
   );
