@@ -3,10 +3,10 @@ import { Geist, JetBrains_Mono } from "next/font/google";
 
 import packageInfo from "@/../package.json";
 import "@/app/globals.css";
-import { Header } from "@/components/layout/Header";
+import { Header } from "@/components/layout/header";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
