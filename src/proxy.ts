@@ -1,11 +1,10 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const SESSION_COOKIE = "session_token";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isAuthenticated =
-    request.cookies.get(SESSION_COOKIE)?.value === "1";
+  const isAuthenticated = request.cookies.get(SESSION_COOKIE)?.value === "1";
 
   if (!isAuthenticated && pathname !== "/") {
     return NextResponse.redirect(new URL("/", request.url));
@@ -25,5 +24,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!.swa).*)",
   ],
 };
