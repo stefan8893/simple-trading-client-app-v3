@@ -3,7 +3,7 @@
 import {
   SmartHeaderPosition,
   useSmartHeaderPosition,
-} from "@/app/_hooks/useSmartHeaderPosition";
+} from "@/hooks/useSmartHeaderPosition";
 import { cn } from "@/lib/utils";
 
 export function Header() {
