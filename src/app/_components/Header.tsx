@@ -18,11 +18,11 @@ export function Header() {
         style={getHeaderStyle(position, scrollY)}
         className={cn(
           "sticky top-0 z-50 flex h-18 shrink-0 flex-col flex-nowrap items-start justify-center",
-          "border-b bg-background/50 px-4 backdrop-blur-sm",
+          "bg-background/50 border-b px-4 backdrop-blur-sm",
           !isAtTop && "transition-transform duration-300 ease-in-out",
         )}
       >
-        <h1 className="font-bold text-foreground text-xl tracking-tight">
+        <h1 className="text-foreground text-xl font-bold tracking-tight">
           Simple Trading
         </h1>
       </header>
