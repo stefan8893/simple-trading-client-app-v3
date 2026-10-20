@@ -3,23 +3,20 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 import "server-only";
 
-function requiredEnvironmentVariable(name: string) {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value;
-}
+import { requiredEnvironmentVariable } from "@/lib/utils";
+
+export const SESSION_COOKIE = "session-token";
 
 function createAuth() {
   const baseURL = requiredEnvironmentVariable("BETTER_AUTH_URL");
   const databaseUri = requiredEnvironmentVariable("MONGODB_URI");
   const clientId = requiredEnvironmentVariable("MICROSOFT_CLIENT_ID");
   const clientSecret = requiredEnvironmentVariable("MICROSOFT_CLIENT_SECRET");
+  const tenantId = requiredEnvironmentVariable("MICROSOFT_TENANT_ID");
   const secret = requiredEnvironmentVariable("BETTER_AUTH_SECRET");
 
   const mongoClient = new MongoClient(databaseUri, {
-    appName: "simple-trading-auth",
+    appName: "simple-trading-client-app",
   });
 
   const database = mongoClient.db(process.env.MONGODB_DATABASE);
@@ -37,7 +34,7 @@ function createAuth() {
       microsoft: {
         clientId,
         clientSecret,
-        tenantId: process.env.MICROSOFT_TENANT_ID,
+        tenantId,
         prompt: "select_account",
         scopes: ["openid", "profile", "email", "offline_access"],
         disableProfilePhoto: true,
@@ -57,7 +54,7 @@ function createAuth() {
     advanced: {
       cookies: {
         session_token: {
-          name: "session-token",
+          name: SESSION_COOKIE,
         },
       },
       defaultCookieAttributes: {

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -6,11 +7,7 @@ import packageInfo from "@/../package.json";
 import { Header } from "@/components/layout/header";
 import { getAuth } from "@/lib/auth";
 
-export default async function AppLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function AppLayout({ children }: { children: ReactNode }) {
   const requestHeaders = await headers();
   const session = await getAuth().api.getSession({ headers: requestHeaders });
 

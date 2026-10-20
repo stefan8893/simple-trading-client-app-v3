@@ -1,13 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const SESSION_COOKIE = "session-token";
+import { SESSION_COOKIE } from "@/lib/auth";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  // This is only an optimistic redirect; AppLayout validates protected-route sessions.
   const hasSessionCookie = request.cookies.has(SESSION_COOKIE);
   const isExpiredSessionRedirect =
-    pathname === "/" &&
-    request.nextUrl.searchParams.get("auth") === "required";
+    pathname === "/" && request.nextUrl.searchParams.get("auth") === "required";
 
   if (!hasSessionCookie && pathname !== "/") {
     return NextResponse.redirect(new URL("/", request.url));

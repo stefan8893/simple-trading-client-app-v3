@@ -32,7 +32,9 @@ export function SignInButton() {
   return (
     <div className="space-y-2">
       <Button onClick={signIn} disabled={isPending}>
-        {isPending ? "Weiterleitung zu Microsoft ..." : "Mit Microsoft anmelden"}
+        {isPending
+          ? "Weiterleitung zu Microsoft ..."
+          : "Mit Microsoft anmelden"}
       </Button>
       {error && (
         <p role="alert" className="text-destructive text-sm">
