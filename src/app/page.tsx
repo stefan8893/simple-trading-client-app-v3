@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SignInButton } from "@/components/auth/sign-in-button";
 
 export default function LandingPage() {
   return (
@@ -16,12 +16,7 @@ export default function LandingPage() {
         <p className="text-muted-foreground max-w-2xl text-lg">
           Analysiere und verwalte deine Trading-Aktivitäten an einem Ort.
         </p>
-        <Link
-          href="/home"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-5 text-sm font-medium transition-colors"
-        >
-          App öffnen
-        </Link>
+        <SignInButton />
       </section>
       <footer className="text-muted-foreground/50 border-t px-4 py-6 text-center text-xs">
         Some Footer

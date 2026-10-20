@@ -8,6 +8,7 @@ import {
   useSmartHeaderPosition,
 } from "@/hooks/useSmartHeaderPosition";
 import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 
 export function Header() {
   const HEADER_HEIGHT = 72;
@@ -32,22 +33,25 @@ export function Header() {
         >
           Simple Trading
         </Link>
-        <nav aria-label="Main Navigation" className="flex items-center gap-4">
-          {[
-            { href: "/home", label: "Home" },
-            { href: "/profile", label: "Profil" },
-            { href: "/settings", label: "Einstellungen" },
-          ].map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              aria-current={pathname === href ? "page" : undefined}
-              className="text-muted-foreground hover:text-foreground text-sm"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-4">
+          <nav aria-label="Main Navigation" className="flex items-center gap-4">
+            {[
+              { href: "/home", label: "Home" },
+              { href: "/profile", label: "Profil" },
+              { href: "/settings", label: "Einstellungen" },
+            ].map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                aria-current={pathname === href ? "page" : undefined}
+                className="text-muted-foreground hover:text-foreground text-sm"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+          <SignOutButton />
+        </div>
       </header>
     </>
   );

@@ -1,20 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const SESSION_COOKIE = "session_token";
+const SESSION_COOKIE = "session-token";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isAuthenticated = request.cookies.get(SESSION_COOKIE)?.value === "1";
+  const hasSessionCookie = request.cookies.has(SESSION_COOKIE);
+  const isExpiredSessionRedirect =
+    pathname === "/" &&
+    request.nextUrl.searchParams.get("auth") === "required";
 
-  if (!isAuthenticated && pathname !== "/") {
+  if (!hasSessionCookie && pathname !== "/") {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isAuthenticated && pathname === "/") {
+  if (hasSessionCookie && pathname === "/" && !isExpiredSessionRedirect) {
     return NextResponse.rewrite(new URL("/home", request.url));
   }
 
-  if (isAuthenticated && pathname === "/home") {
+  if (hasSessionCookie && pathname === "/home") {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, JetBrains_Mono } from "next/font/google";
 
 import "@/app/globals.css";
-import { LocalStorageAuthCookieSync } from "@/components/auth/local-storage-auth-cookie-sync";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -25,10 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="de"
       className={`${geistSans.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="min-h-screen antialiased">
-        <LocalStorageAuthCookieSync />
-        {children}
-      </body>
+      <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
 }
