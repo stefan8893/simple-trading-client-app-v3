@@ -104,6 +104,8 @@ jobs:
       contents: read
     environment:
       name: Production
+    env:
+      AzureAppName: "simple-trading"
     steps:
       - name: Log in to Azure
         uses: azure/login@v3
@@ -115,7 +117,7 @@ jobs:
       - name: Deploy container image
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          app-name: ${{ env.AzureAppName }}
           images: ${{ needs.package.outputs.image }}
 
   cleanup:
