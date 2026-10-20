@@ -3,9 +3,8 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 import "server-only";
 
+import { SESSION_COOKIE } from "@/lib/constants";
 import { requiredEnvironmentVariable } from "@/lib/utils";
-
-export const SESSION_COOKIE = "session-token";
 
 function createAuth() {
   const baseURL = requiredEnvironmentVariable("BETTER_AUTH_URL");
