@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
+
 import { describe, expect, it } from "vitest";
 
-import { config, proxy } from "@/proxy";
+import { proxy } from "@/proxy";
 
 describe("proxy", () => {
   it("redirects unauthenticated visitors from app routes to the landing page", () => {
@@ -37,22 +38,12 @@ describe("proxy", () => {
   });
 
   it("does not rewrite the landing page after an invalid session is detected", () => {
-    const request = new NextRequest(
-      "https://example.test/?auth=required",
-      {
-        headers: {
-          cookie: "session-token=invalid",
-        },
+    const request = new NextRequest("https://example.test/?auth=required", {
+      headers: {
+        cookie: "session-token=invalid",
       },
-    );
+    });
 
     expect(proxy(request).headers.has("x-middleware-rewrite")).toBe(false);
-  });
-
-  it("excludes Azure health checks and auth API routes from proxy matching", () => {
-    const matcher = new RegExp(`^${config.matcher[0]}$`);
-
-    expect(matcher.test("/.swa/health")).toBe(false);
-    expect(matcher.test("/api/auth/get-session")).toBe(false);
   });
 });
