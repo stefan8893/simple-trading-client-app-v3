@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import packageInfo from "@/../package.json";
 import { Header } from "@/components/layout/header";
-import { getAuth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth/auth";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const requestHeaders = await headers();

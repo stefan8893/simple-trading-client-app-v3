@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function SignOutButton() {
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,10 @@ export function SignOutButton() {
         {isPending ? "Abmelden ..." : "Abmelden"}
       </Button>
       {error && (
-        <p role="alert" className="text-destructive absolute top-full right-4 text-xs">
+        <p
+          role="alert"
+          className="text-destructive absolute top-full right-4 text-xs"
+        >
           {error}
         </p>
       )}
