@@ -9,7 +9,8 @@ function requiredEnvironmentVariable(name: string, value: string | undefined) {
 }
 
 export const config = {
-  // These getters defer env validation because Next.js may import server modules during builds.
+  // env variables are missing in the CI pipeline, but Next.js apps may need them during builds.
+  // By using getters, we can ensure that the environment variables are only accessed at runtime, not during build time.
   get auth() {
     return {
       baseURL: requiredEnvironmentVariable(

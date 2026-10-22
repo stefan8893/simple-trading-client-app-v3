@@ -3,8 +3,8 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 import "server-only";
 
-import { SESSION_COOKIE } from "@/lib/constants";
 import { config } from "@/lib/config";
+import { SESSION_COOKIE } from "@/lib/constants";
 
 function createAuth() {
   const mongoClient = new MongoClient(config.database.uri, {
