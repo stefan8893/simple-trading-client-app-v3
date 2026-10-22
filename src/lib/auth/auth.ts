@@ -4,36 +4,29 @@ import { MongoClient } from "mongodb";
 import "server-only";
 
 import { SESSION_COOKIE } from "@/lib/constants";
-import { requiredEnvironmentVariable } from "@/lib/utils";
+import { config } from "@/lib/config";
 
 function createAuth() {
-  const baseURL = requiredEnvironmentVariable("BETTER_AUTH_URL");
-  const databaseUri = requiredEnvironmentVariable("MONGODB_URI");
-  const clientId = requiredEnvironmentVariable("MICROSOFT_CLIENT_ID");
-  const clientSecret = requiredEnvironmentVariable("MICROSOFT_CLIENT_SECRET");
-  const tenantId = requiredEnvironmentVariable("MICROSOFT_TENANT_ID");
-  const secret = requiredEnvironmentVariable("BETTER_AUTH_SECRET");
-
-  const mongoClient = new MongoClient(databaseUri, {
+  const mongoClient = new MongoClient(config.database.uri, {
     appName: "simple-trading-client-app",
   });
 
-  const database = mongoClient.db(process.env.MONGODB_DATABASE);
+  const database = mongoClient.db(config.database.name);
 
   return betterAuth({
     appName: "Simple Trading",
-    baseURL,
-    secret,
-    trustedOrigins: [baseURL],
+    baseURL: config.auth.baseURL,
+    secret: config.auth.secret,
+    trustedOrigins: [config.auth.baseURL],
     database: mongodbAdapter(database, {
       client: mongoClient,
       transaction: false,
     }),
     socialProviders: {
       microsoft: {
-        clientId,
-        clientSecret,
-        tenantId,
+        clientId: config.microsoft.clientId,
+        clientSecret: config.microsoft.clientSecret,
+        tenantId: config.microsoft.tenantId,
         prompt: "select_account",
         scopes: ["openid", "profile", "email", "offline_access"],
         disableProfilePhoto: true,
@@ -57,7 +50,7 @@ function createAuth() {
         },
       },
       defaultCookieAttributes: {
-        secure: baseURL.startsWith("https://"),
+        secure: config.auth.baseURL.startsWith("https://"),
       },
       useSecureCookies: false,
     },
