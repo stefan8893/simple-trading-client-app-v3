@@ -12,7 +12,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getAuth().api.getSession({ headers: requestHeaders });
 
   if (!session) {
-    redirect("/?auth=required");
+    const returnTo = requestHeaders.get("x-auth-return-to") ?? "/home";
+    redirect(`/api/auth/start?callbackURL=${encodeURIComponent(returnTo)}`);
   }
 
   return (

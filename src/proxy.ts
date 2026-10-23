@@ -1,27 +1,43 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+import { getAuth } from "@/lib/auth/auth";
 import { SESSION_COOKIE } from "@/lib/constants";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  // This is only an optimistic redirect; AppLayout validates protected-route sessions.
   const hasSessionCookie = request.cookies.has(SESSION_COOKIE);
-  const isExpiredSessionRedirect =
-    pathname === "/" && request.nextUrl.searchParams.get("auth") === "required";
+  const session = hasSessionCookie
+    ? await getAuth().api.getSession({ headers: request.headers })
+    : null;
 
-  if (!hasSessionCookie && pathname !== "/") {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (!session && pathname !== "/") {
+    const authStartUrl = new URL("/api/auth/start", request.url);
+    authStartUrl.searchParams.set(
+      "callbackURL",
+      `${pathname}${request.nextUrl.search}`,
+    );
+
+    return NextResponse.redirect(authStartUrl);
   }
 
-  if (hasSessionCookie && pathname === "/" && !isExpiredSessionRedirect) {
-    return NextResponse.rewrite(new URL("/home", request.url));
+  if (pathname === "/" && session) {
+    return NextResponse.rewrite(new URL("/home", request.url), {
+      request: { headers: withReturnTo(request, "/home") },
+    });
   }
 
-  if (hasSessionCookie && pathname === "/home") {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  return NextResponse.next({
+    request: {
+      headers: withReturnTo(request, `${pathname}${request.nextUrl.search}`),
+    },
+  });
+}
 
-  return NextResponse.next();
+function withReturnTo(request: NextRequest, returnTo: string) {
+  const headers = new Headers(request.headers);
+  headers.set("x-auth-return-to", returnTo);
+
+  return headers;
 }
 
 export const config = {
