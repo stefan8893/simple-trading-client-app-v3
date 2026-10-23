@@ -12,7 +12,7 @@ FROM base AS builder
 ARG Version=0.0.0
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-RUN npm version "$Version" --allow-same-version --no-git-tag-version
+RUN pnpm version "$Version" --allow-same-version --no-git-tag-version
 RUN pnpm build
 
 FROM node:24-bookworm-slim AS runner
